@@ -19,9 +19,6 @@ Arrange, Act, Assert
     include PostsHelper
 
     RSpec.describe PostsHelper, type: :helper do 
-    # AAA testing
-    # Arrange, Act, Assert
-    puts '==> Triple AAA testing'
 
         it 'assigns a User to a Post' do
           # 1. Arranging our data - assigning variables
