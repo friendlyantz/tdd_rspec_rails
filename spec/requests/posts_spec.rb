@@ -24,7 +24,8 @@ RSpec.describe '/posts', type: :request do
       'id' => '1',
       'title' => 'Test',
       'body' => '12345',
-      'user' => current_user
+      'user' => current_user,
+      'views' => '0'
     }
   end
 
@@ -34,6 +35,7 @@ RSpec.describe '/posts', type: :request do
       'id' => 'a',
       'title' => '1',
       'body' => '123'
+      # 'views' => 'a'
       # TODO: do custom inavlid attr  #
     }
   end
@@ -81,76 +83,90 @@ RSpec.describe '/posts', type: :request do
     end
   end
 
-  # describe "POST /create" do
-  #   context "with valid parameters" do
-  #     it "creates a new Post" do
-  #       expect {
-  #         post posts_url, params: { post: valid_attributes }
-  #       }.to change(Post, :count).by(1)
+  describe 'POST /create' do
+    context 'with valid parameters' do
+      it 'creates a new Post' do
+        expect do
+          post posts_url, params: { post: valid_attributes }
+        end.to change(Post, :count).by(1)
+      end
+
+      it 'redirects to the created post' do
+        post posts_url, params: { post: valid_attributes }
+        expect(response).to redirect_to(post_url(Post.last))
+      end
+    end
+
+    context 'with invalid parameters' do
+      it 'does not create a new Post' do
+        expect do
+          post posts_url, params: { post: invalid_attributes }
+        end.to change(Post, :count).by(0)
+      end
+
+      it "renders a successful response (i.e. to display the 'new' template)" do
+        post posts_url, params: { post: invalid_attributes }
+        expect(response).to be_successful
+      end
+    end
+  end
+
+  # describe 'PATCH /update' do
+  #   context 'with valid parameters' do
+  #     let(:new_attributes) do
+  #       skip('Add a hash of attributes valid for your model')
   #     end
 
-  #     it "redirects to the created post" do
-  #       post posts_url, params: { post: valid_attributes }
-  #       expect(response).to redirect_to(post_url(Post.last))
-  #     end
-  #   end
+  #     it 'updates the requested post' do
+  #       post = Post.new(valid_attributes)
+  #       post.user = current_user
+  #       post.save
 
-  #   context "with invalid parameters" do
-  #     it "does not create a new Post" do
-  #       expect {
-  #         post posts_url, params: { post: invalid_attributes }
-  #       }.to change(Post, :count).by(0)
-  #     end
-
-  #     it "renders a successful response (i.e. to display the 'new' template)" do
-  #       post posts_url, params: { post: invalid_attributes }
-  #       expect(response).to be_successful
-  #     end
-  #   end
-  # end
-
-  # describe "PATCH /update" do
-  #   context "with valid parameters" do
-  #     let(:new_attributes) {
-  #       skip("Add a hash of attributes valid for your model")
-  #     }
-
-  #     it "updates the requested post" do
-  #       post = Post.create! valid_attributes
   #       patch post_url(post), params: { post: new_attributes }
   #       post.reload
-  #       skip("Add assertions for updated state")
+  #       skip('Add assertions for updated state')
   #     end
 
-  #     it "redirects to the post" do
-  #       post = Post.create! valid_attributes
+  #     it 'redirects to the post' do
+  #       post = Post.new(valid_attributes)
+  #       post.user = current_user
+  #       post.save
   #       patch post_url(post), params: { post: new_attributes }
   #       post.reload
   #       expect(response).to redirect_to(post_url(post))
   #     end
   #   end
 
-  #   context "with invalid parameters" do
+  #   context 'with invalid parameters' do
   #     it "renders a successful response (i.e. to display the 'edit' template)" do
-  #       post = Post.create! valid_attributes
+  #       post = Post.new(valid_attributes)
+  #       post.user = current_user
+  #       post.save
+
   #       patch post_url(post), params: { post: invalid_attributes }
   #       expect(response).to be_successful
   #     end
   #   end
   # end
 
-  # describe "DELETE /destroy" do
-  #   it "destroys the requested post" do
-  #     post = Post.create! valid_attributes
-  #     expect {
-  #       delete post_url(post)
-  #     }.to change(Post, :count).by(-1)
-  #   end
+  describe 'DELETE /destroy' do
+    it 'destroys the requested post' do
+      post = Post.new(valid_attributes)
+      post.user = current_user
+      post.save
 
-  #   it "redirects to the posts list" do
-  #     post = Post.create! valid_attributes
-  #     delete post_url(post)
-  #     expect(response).to redirect_to(posts_url)
-  #   end
-  # end
+      expect do
+        delete post_url(post)
+      end.to change(Post, :count).by(-1)
+    end
+
+    it 'redirects to the posts list' do
+      post = Post.new(valid_attributes)
+      post.user = current_user
+      post.save
+
+      delete post_url(post)
+      expect(response).to redirect_to(posts_url)
+    end
+  end
 end
