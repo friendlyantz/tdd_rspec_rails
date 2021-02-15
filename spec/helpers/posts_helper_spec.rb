@@ -11,5 +11,12 @@ require 'rails_helper'
 #   end
 # end
 RSpec.describe PostsHelper, type: :helper do
-  # pending "add some examples to (or delete) #{__FILE__}"
+  current_user = User.first_or_create!(email: 'triple_AAA_tony@test.com', password: 'password', password_confirmation: 'password')
+
+  @post = Post.new(title: 'MyString', body: 'MyText', views: 1)
+
+  returned_post = assign_post_creator(@post, creator)
 end
+
+
+
