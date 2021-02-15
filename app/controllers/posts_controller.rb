@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
   before_action :set_post, only: %i[show edit update destroy]
-
+  # before_action :authentificate_user!
   include PostsHelper
 
   # GET /posts or /posts.json
