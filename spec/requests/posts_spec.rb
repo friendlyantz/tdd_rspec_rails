@@ -23,7 +23,8 @@ RSpec.describe '/posts', type: :request do
       # skip("Add a hash of attributes valid for your model")
       'id' => '1',
       'title' => 'Test',
-      'body' => '12345'
+      'body' => '12345',
+      'user' => current_user
     }
   end
 
